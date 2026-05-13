@@ -70,13 +70,13 @@ backend/
 
 ```bash
 git clone <URL_DEL_REPOSITORIO>
-cd <nombre-del-proyecto>/backend
 ```
 
-### 2. Crear y activar el entorno virtual
+### 2. Crear y activar el entorno virtual del backend
 
 **Windows (PowerShell):**
 ```powershell
+cd <nombre-del-proyecto>/backend
 python -m venv venv
 .\venv\Scripts\activate
 ```
@@ -87,7 +87,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3. Instalar dependencias
+### 3. Instalar dependencias en python
 
 ```bash
 pip install -r requirements.txt
@@ -107,6 +107,7 @@ Verificar que los contenedores estén corriendo:
 docker compose ps
 ```
 
+
 Deberías ver:
 
 ```
@@ -115,7 +116,7 @@ chatapp_mongo     Up
 chatapp_redis     Up
 ```
 
-### 6. Iniciar el servidor
+### 6. Iniciar el servidor backend
 
 Desde la carpeta `backend/` con el venv activado:
 
@@ -123,7 +124,29 @@ Desde la carpeta `backend/` con el venv activado:
 python -m src.app
 ```
 
-El servidor estará disponible en: **http://localhost:3001**
+### 7. Instalar dependencias del frontend
+
+
+```bash
+    cd <nombre-del-proyecto>/frontend
+    npm install
+```
+
+El servidor estará corriendo en `http://localhost:3000` y el WebSocket en `ws://localhost:3001`.
+
+### 8. Iniciar el servidor de frontend
+
+```bash
+    npm run dev
+```
+
+
+## Servicios desplegados:
+
+| Servicio | URL |
+|---|---|
+| Frontend | https://proyecto1-distribuidas.vercel.app |
+| Backend | https://proyecto1-distribuidas.onrender.com |
 
 ---
 

@@ -124,15 +124,13 @@
                 </div>
               </div>
               <!-- ✅ FIX: URL relativa, sin hardcodear host -->
-              <a
+              <button
                 v-if="getFileUrl(message)"
-                :href="getFileUrl(message)"
-                target="_blank"
-                download
+                @click.prevent="downloadFile(message)"
                 class="btn btn-sm btn-primary"
               >
                 Descargar
-              </a>
+              </button>
             </div>
           </div>
 
@@ -244,10 +242,42 @@ function getFileUrl(message) {
   return `${baseHost}/api/upload/files/${filename}`
 }
 
+// Descarga programática: usa fetch para forzar descarga (evita abrir en nueva pestaña)
+async function downloadFile(message) {
+  const filePath = message.file_path || message.filePath
+  if (!filePath) return
+
+  const filename = message.file_name || message.fileName || filePath.split('/').pop()
+  const url = getFileUrl(message)
+  if (!url) return
+
+  try {
+    const headers = {}
+    const token = localStorage.getItem('admin_token')
+    if (token) headers.Authorization = `Bearer ${token}`
+
+    const res = await fetch(url, { headers })
+    if (!res.ok) throw new Error('Error al descargar archivo')
+
+    const blob = await res.blob()
+    const blobUrl = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = blobUrl
+    a.download = decodeURIComponent(filename || 'download')
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(blobUrl)
+  } catch (err) {
+    console.error('Download error:', err)
+    error.value = err.message || 'Error al descargar el archivo'
+  }
+}
+
 onMounted(async () => {
   // 1. Configuración de interfaz
   isMobile.value = window.innerWidth < 768
-  window.addEventListener('resize', handleResize)
+  window.addEventListener('resize', handleResize) 
 
   // 2. Recuperación de datos de la URL o Session
   const roomId = route.params.id

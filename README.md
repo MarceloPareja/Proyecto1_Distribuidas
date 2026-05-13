@@ -9,12 +9,13 @@ Backend de una aplicación de chat en tiempo real construido con **Flask**, **Fl
 | Herramienta | Versión mínima | Descarga |
 |---|---|---|
 | Python | 3.10+ | https://www.python.org/downloads/ |
+| Node.js | 16+ | https://nodejs.org/ |
 | Docker Desktop | Cualquier versión reciente | https://www.docker.com/products/docker-desktop/ |
 | Git | Cualquier versión | https://git-scm.com/ |
 
 ---
 
-## 📂 Estructura del proyecto
+## 📂 Estructura del backend
 
 ```
 backend/
@@ -43,6 +44,24 @@ backend/
 
 ```
 
+## Estructura del frontend
+
+```frontend/
+├── public/
+│   └── index.html              # HTML principal
+├── src/
+│   ├── main.js                 # Punto de entrada de Vue
+│   ├── App.vue                 # Componente raíz
+│   ├── components/
+│   │   ├── Login.vue           # Componente de login
+│   │   ├── RoomList.vue        # Lista de salas
+│   │   ├── ChatRoom.vue        # Sala de chat  
+│   │   └── FileUpload.vue      # Componente para subir archivos
+│   └── services/
+│       ├── api.js             # Funciones para llamadas a la API REST
+│       └── socket.js          # Configuración y eventos de Socket.io
+
+```
 ---
 
 ## ⚙️ Instalación paso a paso

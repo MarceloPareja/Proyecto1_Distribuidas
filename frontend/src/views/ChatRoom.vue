@@ -232,15 +232,16 @@ const currentRoomData = computed(() => {
 })
 
 function getFileUrl(message) {
-  const path = message.file?.url || message.file_path;
-  if (!path) return null;
-  
-  // Si la ruta ya es una URL completa, devolverla
-  if (path.startsWith('http')) return path;
-  
-  // Si es relativa, concatenar el host del backend
-  const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-  return `${baseURL}${path}`;
+  const filePath = message.file_path || message.filePath  // acepta ambos formatos
+  if (!filePath) return null
+
+  const filename = filePath.split('/').pop()
+  if (!filename) return null
+
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const baseHost = apiUrl.replace(/\/api$/, '')
+
+  return `${baseHost}/api/upload/files/${filename}`
 }
 
 onMounted(async () => {
@@ -378,25 +379,16 @@ async function handleFileSelect(event) {
       chatStore.currentUser.nickname
     )
 
-    // 2. IMPORTANTE: Construir la URL completa para la descarga
-    // El backend devuelve "/uploads/archivo.jpg", necesitamos el HOST
-    const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-    const fullUrl = `${baseURL}${result.file_path}`
 
     // 3. Agregar localmente al store (optimista)
-    chatStore.addFileMessage({
-      name: file.name,
-      size: file.size,
-      url: fullUrl
-    })
+   console.log('✅ Resultado del backend:', result) 
 
     // 4. Notificar a los demás por Socket
     // El backend espera recibir los datos del archivo para retransmitirlos
-    socketService.sendMessage({
-      type: 'file',
-      file_path: fullUrl,
-      file_type: file.type,
-      file_name: file.name
+   socketService.sendFileMessage({
+     path: result.filePath,      // ← era result.file_path
+     type: result.fileType,      // ← era result.file_type
+     file_name: result.fileName  // ← era result.file_name
     })
 
     nextTick(() => {

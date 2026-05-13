@@ -14,8 +14,7 @@ export const useChatStore = defineStore('chat', () => {
 
     socketService.onRoomJoined((data) => {
       connected.value = true
-      messages.value = data.history || []  // ✅ el backend manda "history"
-      // users llega por user_list separado
+      messages.value = data.history || []
     })
 
     socketService.onNewMessage((data) => {
@@ -39,7 +38,7 @@ export const useChatStore = defineStore('chat', () => {
     })
 
     socketService.onUserList((data) => {
-      users.value = data.users || []  // ✅ aquí sí llegan los usuarios
+      users.value = data.users || []
     })
 
     socketService.onError((data) => {
@@ -70,23 +69,10 @@ export const useChatStore = defineStore('chat', () => {
     currentRoomId.value = null
   }
 
-  // Actualiza la función addFileMessage en chat.js
-function addFileMessage(fileData) {
-  messages.value.push({
-    type: 'file',
-    nickname: currentUser.value?.nickname,
-    // El backend devuelve file_path, file_name, etc. 
-    // Debemos normalizar para que el template lo lea bien
-    file: {
-      name: fileData.name,
-      size: fileData.size,
-      url: fileData.url
-    },
-    timestamp: new Date().toISOString()
-  })
-}
-
-
+  // FIX 3: addFileMessage eliminada del flujo de upload.
+  // El mensaje de archivo llega por socket (new_message broadcast)
+  // igual que para todos los demás usuarios, evitando duplicados.
+  // onNewMessage() en initializeSocket() lo agrega automáticamente.
 
   return {
     messages,
@@ -97,7 +83,6 @@ function addFileMessage(fileData) {
     initializeSocket,
     joinRoom,
     sendMessage,
-    leaveRoom,
-    addFileMessage
+    leaveRoom
   }
 })

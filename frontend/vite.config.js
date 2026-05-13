@@ -1,8 +1,10 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 
-export default defineConfig({
+export default defineConfig(({mode})=>{
+  const env = loadEnv(mode, process.cwd())
+  return {
   plugins: [vue()],
   test: {
     globals: true,
@@ -26,14 +28,15 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: env.VITE_API_URL || 'http://localhost:3001',
         changeOrigin: true
       },
       '/socket.io': {
-        target: 'http://localhost:3001',
+        target: env.VITE_API_URL || 'http://localhost:3001',
         changeOrigin: true,
         ws: true
       }
     }
   }
+}
 })

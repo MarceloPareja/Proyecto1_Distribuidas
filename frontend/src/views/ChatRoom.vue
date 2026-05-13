@@ -238,7 +238,7 @@ function getFileUrl(message) {
   const filename = filePath.split('/').pop()
   if (!filename) return null
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
   const baseHost = apiUrl.replace(/\/api$/, '')
 
   return `${baseHost}/api/upload/files/${filename}`

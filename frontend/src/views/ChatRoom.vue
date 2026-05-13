@@ -436,12 +436,24 @@ async function handleFileSelect(event) {
 }
 
 function formatTime(timestamp) {
-  if (!timestamp) return ''
-  const date = new Date(timestamp)
+  if (!timestamp) return '';
+
+  // Si el timestamp es un string y no tiene zona horaria, 
+  // le añadimos 'Z' para indicarle a JS que es UTC.
+  let date;
+  if (typeof timestamp === 'string' && !timestamp.endsWith('Z') && !timestamp.includes('+')) {
+    date = new Date(timestamp + 'Z'); 
+  } else {
+    date = new Date(timestamp);
+  }
+
+  if (isNaN(date.getTime())) return '';
+
   return date.toLocaleTimeString('es-ES', {
     hour: '2-digit',
-    minute: '2-digit'
-  })
+    minute: '2-digit',
+    hour12: false
+  });
 }
 
 function formatFileSize(bytes) {
